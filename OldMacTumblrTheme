@@ -11,22 +11,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style type="text/css">
-        /* Paleta de Cores e Variáveis Mac OS X Aqua */
+        /* Paleta de Cores e Variáveis Mac OS X Aqua (mantidas) */
         :root {
-            --mac-bg-window: #EDEDED; /* Fundo levemente cinza da janela */
-            --mac-title-gradient-top: #F0F0F0; /* Gradiente Topo */
-            --mac-title-gradient-bottom: #D0D0D0; /* Gradiente Fundo */
+            --mac-bg-window: #EDEDED; 
+            --mac-title-gradient-top: #F0F0F0; 
+            --mac-title-gradient-bottom: #D0D0D0; 
             --mac-title-border: #999999;
             --mac-title-text: #333333;
-            --mac-link-color: #0076FF; /* Azul Aqua */
+            --mac-link-color: #0076FF; 
             --mac-link-hover: #0056B3;
             --mac-shadow: rgba(0, 0, 0, 0.25);
             --font-family: 'Roboto', sans-serif;
+            --widget-bg: rgba(255, 255, 255, 0.7); /* Fundo um pouco mais transparente para widgets */
         }
 
         /* O Desktop (Body) */
         body {
-            /* Sua imagem do GitHub como background/desktop */
             background: url('https://raw.githubusercontent.com/gusrlima/tumblrImages/main/abstract-blue-aero-dynamics-3j6khkqtryk5eeuh.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: var(--font-family);
@@ -50,22 +50,31 @@
             color: var(--mac-link-hover);
         }
 
-        /* A Janela Principal do Blog (Squircle) */
-        #main-window {
-            width: 95%;
-            max-width: 800px;
+        /* CONTAINER PRINCIPAL PARA O LAYOUT DE MÚLTIPLAS JANELAS */
+        #desktop-container {
+            display: grid;
+            grid-template-columns: 1fr; /* Padrão para telas pequenas */
+            gap: 20px; /* Espaçamento entre as janelas */
+            max-width: 1200px; /* Largura máxima do desktop */
             margin: 40px auto;
+            padding: 0 20px; /* Margem nas laterais */
+            box-sizing: border-box;
+        }
+
+        /* Janela Base (Estilo Aqua) - Reutilizada para todas as janelas */
+        .mac-window {
             background-color: var(--mac-bg-window);
-            /* Cantos bem arredondados no estilo Mac */
             border-radius: 12px; 
             border: 1px solid var(--mac-title-border); 
             box-shadow: 0 8px 20px var(--mac-shadow);
             overflow: hidden; 
             box-sizing: border-box;
+            display: flex; /* Para que o conteúdo interno possa ser flex */
+            flex-direction: column;
         }
 
-        /* Barra de Título Aqua (o elemento chave) */
-        #title-bar {
+        /* Barra de Título Aqua */
+        .mac-title-bar {
             background: linear-gradient(to bottom, var(--mac-title-gradient-top) 0%, var(--mac-title-gradient-bottom) 100%);
             color: var(--mac-title-text);
             padding: 8px 15px;
@@ -75,8 +84,11 @@
             border-bottom: 1px solid var(--mac-title-border);
             position: relative;
         }
+        .mac-title-bar a {
+            color: var(--mac-title-text);
+        }
         
-        /* Três Botões de Semáforo (Traffic Light Buttons) */
+        /* Botões de Semáforo (Traffic Light Buttons) */
         .window-controls {
             position: absolute;
             top: 50%;
@@ -86,128 +98,151 @@
             gap: 6px;
         }
         .control-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 1px solid var(--mac-title-border);
-            cursor: pointer;
-            /* Destaque interno de Aqua Gel */
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 1px solid var(--mac-title-border); cursor: pointer;
             box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7); 
             transition: opacity 0.1s;
         }
         .control-btn:hover { opacity: 0.8; }
-        
-        /* Cores do Semáforo */
-        .close-btn { background-color: #FF5E57; border-color: #E04842; } /* Vermelho (Close) */
-        .minimize-btn { background-color: #FFBB2E; border-color: #E0A425; } /* Amarelo (Minimize) */
-        .zoom-btn { background-color: #27C93F; border-color: #1F9C31; } /* Verde (Zoom) */
-
+        .close-btn { background-color: #FF5E57; border-color: #E04842; } 
+        .minimize-btn { background-color: #FFBB2E; border-color: #E0A425; } 
+        .zoom-btn { background-color: #27C93F; border-color: #1F9C31; } 
 
         /* Conteúdo da Janela */
-        #window-content {
+        .window-content-area {
             padding: 20px;
+            flex-grow: 1; /* Permite que o conteúdo cresça e preencha o espaço */
         }
         
-        /* Navegação (Tabs/Menu de Aplicativo) */
+        /* Navegação Principal (no cabeçalho do blog) */
         #main-nav {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 20px 0;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid var(--mac-title-border);
-            padding-bottom: 10px;
+            list-style: none; padding: 0; margin: 0 0 20px 0;
+            display: flex; gap: 15px; flex-wrap: wrap;
+            border-bottom: 1px solid var(--mac-title-border); padding-bottom: 10px;
         }
         #main-nav li a {
-            font-weight: 500;
-            padding: 5px 0;
-            color: var(--mac-title-text);
-            text-decoration: none;
+            font-weight: 500; padding: 5px 0;
+            color: var(--mac-title-text); text-decoration: none;
             transition: border-color 0.2s;
         }
-        #main-nav li a:hover {
-            border-bottom: 2px solid var(--mac-link-color); /* Efeito de seleção Aqua */
-        }
+        #main-nav li a:hover { border-bottom: 2px solid var(--mac-link-color); }
 
-        /* Estilo dos Cards de Post (Caixas Internas com Sombra) */
+        /* Estilo dos Cards de Post */
         .post-card {
             background-color: var(--mac-white);
             padding: 15px;
             margin-bottom: 25px;
             border-radius: 6px;
             border: 1px solid var(--mac-title-border);
-            /* Sombra interna sutil para profundidade */
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); 
         }
 
-        /* Títulos */
+        /* Títulos e Metadados */
         .post-card h2 {
-            font-size: 1.5em;
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-weight: 600;
+            font-size: 1.5em; margin-top: 0; margin-bottom: 10px; font-weight: 600;
         }
-        .post-card h2 a {
-            color: var(--mac-title-text);
-        }
-        .post-card h2 a:hover {
-            color: var(--mac-link-color);
-        }
-
-        /* Imagens e Vídeos */
+        .post-card h2 a { color: var(--mac-title-text); }
+        .post-card h2 a:hover { color: var(--mac-link-color); }
         .post-card img, .post-card iframe {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 15px auto;
-            border-radius: 4px;
+            max-width: 100%; height: auto; display: block; margin: 15px auto; border-radius: 4px;
+        }
+        .post-meta, .widget-content {
+            font-size: 0.9em; color: var(--mac-dark-gray); margin-top: 10px;
         }
         
-        /* Metadados e Paginação */
-        .post-meta, #pagination {
-            font-size: 0.9em;
-            color: var(--mac-dark-gray);
-            margin-top: 10px;
-        }
-        
-        /* Paginação (Botões Aqua/Pastilha) */
+        /* Paginação */
+        #pagination { margin-top: 20px; text-align: center; }
         #pagination a {
-            display: inline-block;
-            padding: 6px 12px;
-            margin: 0 5px;
-            border-radius: 12px; /* Formato de pastilha */
-            border: 1px solid var(--mac-title-border);
+            display: inline-block; padding: 6px 12px; margin: 0 5px;
+            border-radius: 12px; border: 1px solid var(--mac-title-border);
             background: linear-gradient(to bottom, #FFFFFF, #EEEEEE);
-            color: var(--mac-title-text);
-            font-weight: 500;
-            transition: all 0.2s;
+            color: var(--mac-title-text); font-weight: 500; transition: all 0.2s;
         }
-        #pagination a:hover {
-            border-color: var(--mac-link-color);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
+        #pagination a:hover { border-color: var(--mac-link-color); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
 
-        /* Rodapé imitando a Dock/Barra de Menu */
+
+        /* Rodapé imitando a Dock */
         #footer {
-            text-align: center;
-            color: var(--mac-title-text);
-            padding: 10px;
-            font-size: 0.9em;
-            background-color: var(--mac-title-gradient-top); /* Cor clara da Dock */
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            border-top: 1px solid var(--mac-title-border);
-            box-shadow: 0 -2px 10px var(--mac-shadow);
+            text-align: center; color: var(--mac-title-text); padding: 12px; font-size: 0.9em;
+            background-color: var(--mac-title-gradient-top); width: 100%;
+            position: fixed; bottom: 0;
+            border-top: 1px solid var(--mac-title-border); box-shadow: 0 -2px 10px var(--mac-shadow);
             z-index: 1000;
         }
 
-        /* Responsividade */
-        @media (max-width: 768px) {
-            #main-window {
-                margin: 20px auto;
-                border-radius: 8px; 
+        /* --- LAYOUT DE MÚLTIPLAS JANELAS ESPECÍFICO --- */
+
+        /* Janela Principal do Blog */
+        #main-blog-window {
+            grid-column: 1 / -1; /* Ocupa todas as colunas por padrão */
+        }
+
+        /* Sidebar/Widgets (janelas menores) */
+        .widget-window {
+            background-color: var(--widget-bg); /* Um pouco mais transparente */
+            backdrop-filter: blur(5px); /* Embaça o fundo ligeiramente */
+            -webkit-backdrop-filter: blur(5px);
+            min-height: 150px;
+        }
+        .widget-window .mac-title-bar {
+            font-size: 1em; padding: 6px 10px; text-align: left; /* Títulos menores nos widgets */
+        }
+        .widget-window .window-controls {
+            display: none; /* Oculta os botões de semáforo nos widgets menores */
+        }
+        .widget-window h3 {
+            margin-top: 0; margin-bottom: 10px; font-size: 1.2em; font-weight: 600;
+            color: var(--mac-title-text);
+        }
+        .widget-window ul {
+            list-style: none; padding: 0; margin: 0;
+        }
+        .widget-window ul li {
+            margin-bottom: 5px;
+        }
+        .widget-window ul li a {
+            display: block; padding: 3px 0;
+        }
+
+
+        /* Media Query para Layout de 2 Colunas em Telas Maiores */
+        @media (min-width: 900px) {
+            #desktop-container {
+                grid-template-columns: 2fr 1fr; /* 2/3 para o blog, 1/3 para a sidebar */
+            }
+            #main-blog-window {
+                grid-column: 1; /* A janela principal fica na primeira coluna */
+            }
+            #sidebar-widgets {
+                grid-column: 2; /* A sidebar fica na segunda coluna */
+                display: flex; /* Para que os widgets internos se organizem em coluna */
+                flex-direction: column;
+                gap: 20px; /* Espaçamento entre os widgets da sidebar */
+            }
+        }
+
+        /* Media Query para telas ainda maiores, talvez 3 colunas */
+        @media (min-width: 1200px) {
+            #desktop-container {
+                grid-template-columns: 3fr 1fr 1fr; /* Mais espaço para o blog e 2 colunas para widgets */
+            }
+            #main-blog-window {
+                grid-column: 1;
+            }
+            #sidebar-widgets {
+                grid-column: 2 / -1; /* Widgets podem ocupar o restante das colunas */
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Widgets organizados em grid dentro da sidebar */
+                gap: 20px;
+                align-content: start; /* Para os widgets ficarem no topo */
+            }
+        }
+
+        /* Responsividade para o rodapé */
+        @media (max-width: 600px) {
+            #footer {
+                font-size: 0.8em;
+                padding: 8px;
             }
         }
     </style>
@@ -217,87 +252,133 @@
 
 <body>
 
-    <div id="main-window">
+    <div id="desktop-container">
         
-        <header id="title-bar">
-            <div class="window-controls">
-                <span class="control-btn close-btn" title="Close"></span>
-                <span class="control-btn minimize-btn" title="Minimize"></span>
-                <span class="control-btn zoom-btn" title="Zoom"></span>
-            </div>
-            <a href="/">{Title}</a>
-        </header>
+        <div id="main-blog-window" class="mac-window">
+            <header class="mac-title-bar">
+                <div class="window-controls">
+                    <span class="control-btn close-btn" title="Close"></span>
+                    <span class="control-btn minimize-btn" title="Minimize"></span>
+                    <span class="control-btn zoom-btn" title="Zoom"></span>
+                </div>
+                <a href="/">{Title}</a>
+            </header>
 
-        <section id="window-content">
-            
-            <nav>
-                <ul id="main-nav">
-                    <li><a href="/">File</a></li>
-                    <li><a href="/archive">Edit</a></li>
-                    <li><a href="/ask">View</a></li>
-                    <li><a href="/submit">Go</a></li>
-                    
-                    {block:CustomPages}
-                        <li><a href="{URL}">{Label}</a></li>
-                    {/block:CustomPages}
-                </ul>
-            </nav>
-
-            <div id="posts-container">
-                {block:Posts}
-                    <article class="post-card" id="{PostID}">
+            <section class="window-content-area">
+                
+                <nav>
+                    <ul id="main-nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/archive">Archive</a></li>
+                        <li><a href="/ask">Ask</a></li>
+                        <li><a href="/submit">Submit</a></li>
                         
-                        <div class="post-meta">
-                            <span>Posted {TimeAgo}</span>
-                            {block:NoteCount} | <a href="{Permalink}">{NoteCountWithLabel}</a>{/block:NoteCount}
-                        </div>
+                        {block:CustomPages}
+                            <li><a href="{URL}">{Label}</a></li>
+                        {/block:CustomPages}
+                    </ul>
+                </nav>
 
-                        {block:Text}
-                            {block:Title}<h2><a href="{Permalink}">{Title}</a></h2>{/block:Title}
-                            <div class="post-content">{Body}</div>
-                        {/block:Text}
-
-                        {block:Photo}
-                            <a href="{Permalink}"><img src="{PhotoURL-500}" alt="{PhotoAlt}" /></a>
-                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
-                        {/block:Photo}
-
-                        {block:Photoset}
-                            <div class="photoset-container">{Photoset-500}</div>
-                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
-                        {/block:Photoset}
-                        
-                        {block:Quote}
-                            <blockquote>"{Quote}"</blockquote>
-                            {block:Source}<p class="post-content">— Source: {Source}</p>{/block:Source}
-                        {/block:Quote}
-                        
-                        {block:Link}
-                            <h2><a href="{URL}" target="_blank">{Name}</a></h2>
-                            {block:Description}<div class="post-content">{Description}</div>{/block:Description}
-                        {/block:Link}
-
-                        {block:Audio}{AudioPlayer}{block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}{/block:Audio}
-                        {block:Video}{Video-500}{block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}{/block:Video}
-
-                        {block:HasTags}
+                <div id="posts-container">
+                    {block:Posts}
+                        <article class="post-card" id="{PostID}">
+                            
                             <div class="post-meta">
-                                {block:Tags} <a href="{TagURL}">#{Tag}</a> {/block:Tags}
+                                <span>Posted {TimeAgo}</span>
+                                {block:NoteCount} | <a href="{Permalink}">{NoteCountWithLabel}</a>{/block:NoteCount}
                             </div>
-                        {/block:HasTags}
-                    </article>
-                {/block:Posts}
+
+                            {block:Text}
+                                {block:Title}<h2><a href="{Permalink}">{Title}</a></h2>{/block:Title}
+                                <div class="post-content">{Body}</div>
+                            {/block:Text}
+
+                            {block:Photo}
+                                <a href="{Permalink}"><img src="{PhotoURL-500}" alt="{PhotoAlt}" /></a>
+                                {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                            {/block:Photo}
+
+                            {block:Photoset}
+                                <div class="photoset-container">{Photoset-500}</div>
+                                {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                            {/block:Photoset}
+                            
+                            {block:Quote}
+                                <blockquote>"{Quote}"</blockquote>
+                                {block:Source}<p class="post-content">— Source: {Source}</p>{/block:Source}
+                            {/block:Quote}
+                            
+                            {block:Link}
+                                <h2><a href="{URL}" target="_blank">{Name}</a></h2>
+                                {block:Description}<div class="post-content">{Description}</div>{/block:Description}
+                            {/block:Link}
+
+                            {block:Audio}{AudioPlayer}{block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}{/block:Audio}
+                            {block:Video}{Video-500}{block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}{/block:Video}
+
+                            {block:HasTags}
+                                <div class="post-meta">
+                                    {block:Tags} <a href="{TagURL}">#{Tag}</a> {/block:Tags}
+                                </div>
+                            {/block:HasTags}
+                        </article>
+                    {/block:Posts}
+                </div>
+
+                <div id="pagination">
+                    {block:PreviousPage}<a href="{PreviousPage}">← Previous</a>{/block:PreviousPage}
+                    {block:NextPage}<a href="{NextPage}">Next →</a>{/block:NextPage}
+                </div>
+            </section>
+        </div>
+
+        <div id="sidebar-widgets">
+            
+            {block:Description}
+            <div class="widget-window mac-window">
+                <header class="mac-title-bar">
+                    <span class="widget-title">About {Title}</span>
+                </header>
+                <div class="window-content-area">
+                    <p>{Description}</p>
+                </div>
+            </div>
+            {/block:Description}
+
+            {block:HasTags}
+            <div class="widget-window mac-window">
+                <header class="mac-title-bar">
+                    <span class="widget-title">Tags</span>
+                </header>
+                <div class="window-content-area">
+                    <ul>
+                    {block:Tags}
+                        <li><a href="{TagURL}">#{Tag}</a> ({TagCount})</li>
+                    {/block:Tags}
+                    </ul>
+                </div>
+            </div>
+            {/block:HasTags}
+
+            <div class="widget-window mac-window">
+                <header class="mac-title-bar">
+                    <span class="widget-title">Links</span>
+                </header>
+                <div class="window-content-area">
+                    <ul>
+                        <li><a href="https://www.apple.com/macos/">Official macOS Site</a></li>
+                        <li><a href="https://www.tumblr.com/explore">Explore Tumblr</a></li>
+                        <li><a href="https://github.com/gusrlima">My GitHub</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div id="pagination">
-                {block:PreviousPage}<a href="{PreviousPage}">← Previous</a>{/block:PreviousPage}
-                {block:NextPage}<a href="{NextPage}">Next →</a>{/block:NextPage}
             </div>
-        </section>
+
     </div>
 
     <footer id="footer">
-        © {Year} {Title} | Mac OS X.4 (Tiger) Style | Dock Loaded
+        © {Year} {Title} | macOS Aqua Multi-Tasking | Desktop Cleaned
     </footer>
 
 </body>
