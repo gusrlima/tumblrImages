@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{Title}</title>
+    {block:Description}<meta name="description" content="{MetaDescription}" />{/block:Description}
+    <link rel="shortcut icon" href="{Favicon}" />
+    <link rel="alternate" type="application/rss+xml" href="{RSS}" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style type="text/css">
+        /* Paleta de Cores e Variáveis Mac OS X Aqua */
+        :root {
+            --mac-bg-window: #EDEDED; /* Fundo levemente cinza da janela */
+            --mac-title-gradient-top: #F0F0F0; /* Gradiente Topo */
+            --mac-title-gradient-bottom: #D0D0D0; /* Gradiente Fundo */
+            --mac-title-border: #999999;
+            --mac-title-text: #333333;
+            --mac-link-color: #0076FF; /* Azul Aqua */
+            --mac-link-hover: #0056B3;
+            --mac-shadow: rgba(0, 0, 0, 0.25);
+            --font-family: 'Roboto', sans-serif;
+        }
+
+        /* O Desktop (Body) */
+        body {
+            /* Sua imagem do GitHub como background/desktop */
+            background: url('https://raw.githubusercontent.com/gusrlima/tumblrImages/main/abstract-blue-aero-dynamics-3j6khkqtryk5eeuh.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: var(--font-family);
+            color: var(--mac-title-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        /* Estilos Globais */
+        a {
+            color: var(--mac-link-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: var(--mac-link-hover);
+        }
+
+        /* A Janela Principal do Blog (Squircle) */
+        #main-window {
+            width: 95%;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: var(--mac-bg-window);
+            /* Cantos bem arredondados no estilo Mac */
+            border-radius: 12px; 
+            border: 1px solid var(--mac-title-border); 
+            box-shadow: 0 8px 20px var(--mac-shadow);
+            overflow: hidden; 
+            box-sizing: border-box;
+        }
+
+        /* Barra de Título Aqua (o elemento chave) */
+        #title-bar {
+            background: linear-gradient(to bottom, var(--mac-title-gradient-top) 0%, var(--mac-title-gradient-bottom) 100%);
+            color: var(--mac-title-text);
+            padding: 8px 15px;
+            font-weight: 500;
+            font-size: 1.1em;
+            text-align: center;
+            border-bottom: 1px solid var(--mac-title-border);
+            position: relative;
+        }
+        
+        /* Três Botões de Semáforo (Traffic Light Buttons) */
+        .window-controls {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 6px;
+        }
+        .control-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid var(--mac-title-border);
+            cursor: pointer;
+            /* Destaque interno de Aqua Gel */
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7); 
+            transition: opacity 0.1s;
+        }
+        .control-btn:hover { opacity: 0.8; }
+        
+        /* Cores do Semáforo */
+        .close-btn { background-color: #FF5E57; border-color: #E04842; } /* Vermelho (Close) */
+        .minimize-btn { background-color: #FFBB2E; border-color: #E0A425; } /* Amarelo (Minimize) */
+        .zoom-btn { background-color: #27C93F; border-color: #1F9C31; } /* Verde (Zoom) */
+
+
+        /* Conteúdo da Janela */
+        #window-content {
+            padding: 20px;
+        }
+        
+        /* Navegação (Tabs/Menu de Aplicativo) */
+        #main-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--mac-title-border);
+            padding-bottom: 10px;
+        }
+        #main-nav li a {
+            font-weight: 500;
+            padding: 5px 0;
+            color: var(--mac-title-text);
+            text-decoration: none;
+            transition: border-color 0.2s;
+        }
+        #main-nav li a:hover {
+            border-bottom: 2px solid var(--mac-link-color); /* Efeito de seleção Aqua */
+        }
+
+        /* Estilo dos Cards de Post (Caixas Internas com Sombra) */
+        .post-card {
+            background-color: var(--mac-white);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            border: 1px solid var(--mac-title-border);
+            /* Sombra interna sutil para profundidade */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); 
+        }
+
+        /* Títulos */
+        .post-card h2 {
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .post-card h2 a {
+            color: var(--mac-title-text);
+        }
+        .post-card h2 a:hover {
+            color: var(--mac-link-color);
+        }
+
+        /* Imagens e Vídeos */
+        .post-card img, .post-card iframe {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 15px auto;
+            border-radius: 4px;
+        }
+        
+        /* Metadados e Paginação */
+        .post-meta, #pagination {
+            font-size: 0.9em;
+            color: var(--mac-dark-gray);
+            margin-top: 10px;
+        }
+        
+        /* Paginação (Botões Aqua/Pastilha) */
+        #pagination a {
+            display: inline-block;
+            padding: 6px 12px;
+            margin: 0 5px;
+            border-radius: 12px; /* Formato de pastilha */
+            border: 1px solid var(--mac-title-border);
+            background: linear-gradient(to bottom, #FFFFFF, #EEEEEE);
+            color: var(--mac-title-text);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        #pagination a:hover {
+            border-color: var(--mac-link-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Rodapé imitando a Dock/Barra de Menu */
+        #footer {
+            text-align: center;
+            color: var(--mac-title-text);
+            padding: 10px;
+            font-size: 0.9em;
+            background-color: var(--mac-title-gradient-top); /* Cor clara da Dock */
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            border-top: 1px solid var(--mac-title-border);
+            box-shadow: 0 -2px 10px var(--mac-shadow);
+            z-index: 1000;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            #main-window {
+                margin: 20px auto;
+                border-radius: 8px; 
+            }
+        }
+    </style>
+    
+    <style type="text/css">{CustomCSS}</style>
+</head>
+
+<body>
+
+    <div id="main-window">
+        
+        <header id="title-bar">
+            <div class="window-controls">
+                <span class="control-btn close-btn" title="Close"></span>
+                <span class="control-btn minimize-btn" title="Minimize"></span>
+                <span class="control-btn zoom-btn" title="Zoom"></span>
+            </div>
+            <a href="/">{Title}</a>
+        </header>
+
+        <section id="window-content">
+            
+            <nav>
+                <ul id="main-nav">
+                    <li><a href="/">File</a></li>
+                    <li><a href="/archive">Edit</a></li>
+                    <li><a href="/ask">View</a></li>
+                    <li><a href="/submit">Go</a></li>
+                    
+                    {block:CustomPages}
+                        <li><a href="{URL}">{Label}</a></li>
+                    {/block:CustomPages}
+                </ul>
+            </nav>
+
+            <div id="posts-container">
+                {block:Posts}
+                    <article class="post-card" id="{PostID}">
+                        
+                        <div class="post-meta">
+                            <span>Posted {TimeAgo}</span>
+                            {block:NoteCount} | <a href="{Permalink}">{NoteCountWithLabel}</a>{/block:NoteCount}
+                        </div>
+
+                        {block:Text}
+                            {block:Title}<h2><a href="{Permalink}">{Title}</a></h2>{/block:Title}
+                            <div class="post-content">{Body}</div>
+                        {/block:Text}
+
+                        {block:Photo}
+                            <a href="{Permalink}"><img src="{PhotoURL-500}" alt="{PhotoAlt}" /></a>
+                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                        {/block:Photo}
+
+                        {block:Photoset}
+                            <div class="photoset-container">{Photoset-500}</div>
+                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                        {/block:Photoset}
+                        
+                        {block:Quote}
+                            <blockquote>"{Quote}"</blockquote>
+                            {block:Source}<p class="post-content">— Source: {Source}</p>{/block:Source}
+                        {/block:Quote}
+                        
+                        {block:Link}
+                            <h2><a href="{URL}" target="_blank">{Name}</a></h2>
+                            {block:Description}<div class="post-content">{Description}</div>{/block:Description}
+                        {/block:Link}
+
+                        {block:Audio}{AudioPlayer}{block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}{/block:Audio}
+                        {block:Video}{Video-500}{block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}{/block:Video}
+
+                        {block:HasTags}
+                            <div class="post-meta">
+                                {block:Tags} <a href="{TagURL}">#{Tag}</a> {/block:Tags}
+                            </div>
+                        {/block:HasTags}
+                    </article>
+                {/block:Posts}
+            </div>
+
+            <div id="pagination">
+                {block:PreviousPage}<a href="{PreviousPage}">← Previous</a>{/block:PreviousPage}
+                {block:NextPage}<a href="{NextPage}">Next →</a>{/block:NextPage}
+            </div>
+        </section>
+    </div>
+
+    <footer id="footer">
+        © {Year} {Title} | Mac OS X.4 (Tiger) Style | Dock Loaded
+    </footer>
+
+</body>
+</html>
