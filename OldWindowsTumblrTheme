@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{Title}</title>
+    {block:Description}<meta name="description" content="{MetaDescription}" />{/block:Description}
+    <link rel="shortcut icon" href="{Favicon}" />
+    <link rel="alternate" type="application/rss+xml" href="{RSS}" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap" rel="stylesheet">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style type="text/css">
+        /* Paleta de Cores e Variáveis Clássicas de PC */
+        :root {
+            --win-bg: #C0C0C0; /* Fundo Cinza do Windows 95 */
+            --win-border-light: #FFFFFF; /* Borda 3D clara */
+            --win-border-dark: #808080; /* Borda 3D escura/sombra */
+            --title-bar-bg: #000080; /* Azul Marinho da Barra de Título */
+            --title-bar-text: #FFFFFF;
+            --text-color: #000000;
+            --font-family: 'Arial', sans-serif;
+        }
+
+        /* O Desktop (Body) */
+        body {
+            /* Sua imagem do GitHub como background/desktop */
+            background: url('https://raw.githubusercontent.com/gusrlima/tumblrImages/main/abstract-blue-aero-dynamics-3j6khkqtryk5eeuh.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: var(--font-family);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinha a janela no topo da tela */
+            min-height: 100vh;
+        }
+
+        /* Estilos Globais de Links e Texto */
+        a {
+            color: var(--title-bar-bg);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--win-border-dark);
+        }
+
+        /* A Janela Principal do Blog */
+        #main-window {
+            width: 95%;
+            max-width: 800px;
+            margin: 30px auto;
+            border-style: solid;
+            border-width: 3px;
+            border-color: var(--win-border-light) var(--win-border-dark) var(--win-border-dark) var(--win-border-light);
+            background-color: var(--win-bg);
+            box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.4); /* Sombra pesada para destacar */
+            box-sizing: border-box;
+        }
+
+        /* Barra de Título */
+        #title-bar {
+            background-color: var(--title-bar-bg);
+            color: var(--title-bar-text);
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #title-bar a {
+            color: var(--title-bar-text);
+        }
+
+        /* Botões de Controle da Janela (Simulação) */
+        .window-controls {
+            display: flex;
+            gap: 2px;
+        }
+        .control-btn {
+            background-color: var(--win-bg);
+            color: var(--text-color);
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 18px;
+            font-size: 14px;
+            font-weight: bold;
+            /* Efeito 3D para os botões */
+            border-style: solid;
+            border-width: 2px;
+            border-color: var(--win-border-light) var(--win-border-dark) var(--win-border-dark) var(--win-border-light);
+            cursor: pointer;
+        }
+        .control-btn:active {
+            /* Efeito de botão pressionado */
+            border-color: var(--win-border-dark) var(--win-border-light) var(--win-border-light) var(--win-border-dark);
+            background-color: var(--win-border-dark);
+            box-shadow: none;
+        }
+        .close-btn { background-color: #FF0000; color: white; } /* Botão de fechar vermelho */
+
+
+        /* Conteúdo da Janela (Menu e Posts) */
+        #window-content {
+            padding: 15px;
+            background-color: var(--win-bg);
+        }
+        
+        /* Navegação (Menu de Botões) */
+        #main-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 15px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--win-border-dark); /* Linha divisória */
+            padding-bottom: 10px;
+        }
+        #main-nav li a {
+            font-weight: normal;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            color: var(--text-color);
+            background-color: var(--win-bg);
+            /* Efeito 3D de botão */
+            border-style: solid;
+            border-width: 2px;
+            border-color: var(--win-border-light) var(--win-border-dark) var(--win-border-dark) var(--win-border-light);
+            cursor: pointer;
+            transition: none; /* Desativa transições para o efeito instantâneo retro */
+        }
+        #main-nav li a:hover {
+            color: var(--text-color);
+            background-color: var(--win-border-light);
+        }
+        #main-nav li a:active {
+            /* Efeito de botão pressionado */
+            border-color: var(--win-border-dark) var(--win-border-light) var(--win-border-light) var(--win-border-dark);
+            background-color: var(--win-border-dark);
+            color: var(--win-bg);
+        }
+
+        /* Estilo dos Cards de Post (Painéis Inset) */
+        .post-card {
+            background-color: var(--win-bg);
+            padding: 15px;
+            margin-bottom: 20px;
+            /* Efeito 3D de painel "afundado" */
+            border-style: solid;
+            border-width: 2px;
+            border-color: var(--win-border-dark) var(--win-border-light) var(--win-border-light) var(--win-border-dark);
+        }
+
+        /* Títulos */
+        .post-card h2 {
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .post-card h2 a {
+            color: var(--text-color);
+            text-decoration: underline; /* Links sublinhados como nos browsers antigos */
+        }
+        .post-card h2 a:hover {
+            color: var(--title-bar-bg);
+        }
+
+        /* Imagens e Vídeos */
+        .post-card img, .post-card iframe {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+            /* Borda simples para simular visualizações de imagem */
+            border: 1px solid var(--win-border-dark);
+        }
+
+        /* Metadados e Paginação */
+        .post-meta, #pagination {
+            font-size: 0.9em;
+            color: var(--light-text-color);
+            margin-top: 10px;
+        }
+        #pagination a {
+            /* Botões de paginação */
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 5px;
+        }
+        
+        /* Rodapé fora da Janela (Simulação da Barra de Tarefas ou Terminal) */
+        #footer {
+            text-align: center;
+            color: var(--title-bar-text);
+            padding: 10px;
+            font-size: 0.8em;
+            background-color: var(--title-bar-bg);
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        /* Responsividade: Reduz a margem em telas pequenas */
+        @media (max-width: 850px) {
+            #main-window {
+                margin: 10px;
+            }
+        }
+    </style>
+    
+    <style type="text/css">{CustomCSS}</style>
+</head>
+
+<body>
+
+    <div id="main-window">
+        
+        <header id="title-bar">
+            <a href="/">{Title}</a>
+            <div class="window-controls">
+                <span class="control-btn">—</span>
+                <span class="control-btn">□</span>
+                <span class="control-btn close-btn">X</span>
+            </div>
+        </header>
+
+        <section id="window-content">
+            
+            <nav>
+                <ul id="main-nav">
+                    <li><a href="/">File</a></li>
+                    <li><a href="/archive">View</a></li>
+                    <li><a href="/ask">Help</a></li>
+                    <li><a href="/submit">New</a></li>
+                    
+                    {block:CustomPages}
+                        <li><a href="{URL}">{Label}</a></li>
+                    {/block:CustomPages}
+                </ul>
+            </nav>
+
+            <div id="posts-container">
+                {block:Posts}
+                    <article class="post-card" id="{PostID}">
+                        
+                        <div class="post-meta">
+                            <span>{TimeAgo}</span>
+                            {block:NoteCount} | <a href="{Permalink}">{NoteCountWithLabel}</a>{/block:NoteCount}
+                            {block:RebloggedFrom} | Reblog: <a href="{ReblogParentURL}">{ReblogParentName}</a>{/block:RebloggedFrom}
+                        </div>
+
+                        {block:Text}
+                            {block:Title}<h2><a href="{Permalink}">{Title}</a></h2>{/block:Title}
+                            <div class="post-content">{Body}</div>
+                        {/block:Text}
+
+                        {block:Photo}
+                            <a href="{Permalink}"><img src="{PhotoURL-500}" alt="{PhotoAlt}" /></a>
+                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                        {/block:Photo}
+
+                        {block:Photoset}
+                            <div class="photoset-container">{Photoset-500}</div>
+                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                        {/block:Photoset}
+                        
+                        {block:Quote}
+                            <blockquote>"{Quote}"</blockquote>
+                            {block:Source}<p class="post-content">— Source: {Source}</p>{/block:Source}
+                        {/block:Quote}
+
+                        {block:Link}
+                            <h2><a href="{URL}" target="_blank">Link: {Name}</a></h2>
+                            {block:Description}<div class="post-content">{Description}</div>{/block:Description}
+                        {/block:Link}
+
+                        {block:Chat}
+                            {block:Title}<h2><a href="{Permalink}">Chat: {Title}</a></h2>{/block:Title}
+                            <div class="post-content">
+                                <ul>
+                                    {block:Lines}
+                                        <li class="{Alt}">{block:Label}<b>{Label}</b>{/block:Label} {Line}</li>
+                                    {/block:Lines}
+                                </ul>
+                            </div>
+                        {/block:Chat}
+                        
+                        {block:Audio}
+                            {AudioPlayer}
+                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                        {/block:Audio}
+
+                        {block:Video}
+                            {Video-500}
+                            {block:Caption}<div class="post-content">{Caption}</div>{/block:Caption}
+                        {/block:Video}
+
+                        {block:Answer}
+                            <div class="post-content">
+                                <p><b>User:</b> {Question}</p>
+                                <p><b>You:</b> {Answer}</p>
+                            </div>
+                        {/block:Answer}
+
+                        {block:HasTags}
+                            <div class="post-meta" style="margin-top: 10px;">
+                                [Tags: {block:Tags} <a href="{TagURL}">{Tag}</a> {/block:Tags}]
+                            </div>
+                        {/block:HasTags}
+                    </article>
+                {/block:Posts}
+            </div>
+
+            <div id="pagination">
+                {block:PreviousPage}<a href="{PreviousPage}">[<<< Anterior]</a>{/block:PreviousPage}
+                {block:NextPage}<a href="{NextPage}">[Próximo >>>]</a>{/block:NextPage}
+            </div>
+        </section>
+    </div>
+
+    <footer id="footer">
+        C:\> Blog Version {Year} - Status: Online | <a href="https://github.com/gusrlima" style="color: yellow;">GitHub Background Loaded</a>
+    </footer>
+
+</body>
+</html>
